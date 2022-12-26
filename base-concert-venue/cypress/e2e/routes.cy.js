@@ -17,3 +17,8 @@ it("displays correct heading when navigating to 'bands' route", () => {
     "exist"
   );
 });
+
+it("resets the db", () => {
+  // checks if db was reset
+  cy.task("db:reset");
+});
