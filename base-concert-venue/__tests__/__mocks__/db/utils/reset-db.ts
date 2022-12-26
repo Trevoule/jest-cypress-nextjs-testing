@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 // file that will read data from json files from fakeData
 // and will write it to db json files
 import { readFakeData } from "@/__tests__/__mocks__/fakeData";
