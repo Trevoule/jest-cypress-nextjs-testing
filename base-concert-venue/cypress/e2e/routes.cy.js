@@ -1,4 +1,7 @@
 /* eslint-disable no-undef */
+import { generateNewBand } from "../../__tests__/__mocks__/fakeData/newBand";
+import { generateRandomId } from "../../lib/features/reservations/utils";
+
 it("displays correct heading when navigating to 'shows' route", () => {
   //   setting route
   cy.visit("/");
@@ -37,4 +40,20 @@ it("displays error for band ID not found in db", () => {
 
   // element not specified
   cy.findByText(/Error: band not found/i).should("exist");
+});
+
+it("displays error for band ID not found in db", () => {
+  cy.task("db:reset").visit("/bands/12345");
+
+  // element not specified
+  cy.findByText(/Error: band not found/i).should("exist");
+});
+
+it("displays name for band that was not present at build time", () => {
+  const bandId = generateRandomId();
+  const newBand = generateNewBand(bandId);
+
+  cy.task("db:reset").task("addBand", newBand).visit(`/bands/${bandId}`);
+
+  cy.findByRole("heading", { name: /Avalanche of cheese/i }).should("exist");
 });

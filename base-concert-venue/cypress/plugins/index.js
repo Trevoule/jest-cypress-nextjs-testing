@@ -14,6 +14,7 @@
 // the project's config changing)
 
 const { resetDB } = require("../../__tests__/__mocks__/db/utils/reset-db");
+const { addBand } = require("../../lib/features/bands/queries");
 
 /**
  * @type {Cypress.PluginConfig}
@@ -23,6 +24,10 @@ module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   on("task", {
     "db:reset": () => resetDB().then(() => null),
+
+    // task for generating new band
+    addBand: (newBand) => addBand(newBand).then(() => null),
   });
+
   // `config` is the resolved Cypress config
 };
