@@ -22,3 +22,19 @@ it("resets the db", () => {
   // checks if db was reset
   cy.task("db:reset");
 });
+
+// dynamic route that present at build time
+it("displays correct band name for band route that existed at build time", () => {
+  // reset db and go to 'bands' route
+  cy.task("db:reset").visit("/bands/1");
+
+  // check for heading content on specified route
+  cy.findByRole("heading", { name: /Shamrock Pete/i }).should("exist");
+});
+
+it("displays error for band ID not found in db", () => {
+  cy.task("db:reset").visit("/bands/12345");
+
+  // element not specified
+  cy.findByText(/Error: band not found/i).should("exist");
+});
