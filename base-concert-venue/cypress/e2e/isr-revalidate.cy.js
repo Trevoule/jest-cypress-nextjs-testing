@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { generateNewBand } from "../../__tests__/__mocks__/fakeData/newBand";
 import { generateRandomId } from "../../lib/features/reservations/utils";
+import { generateNewShow } from "../../__tests__/__mocks__/fakeData/newShow";
 
 it("should load refreshed page from cache after new band is added", () => {
   // check that new band is not on page
@@ -22,4 +23,31 @@ it("should load refreshed page from cache after new band is added", () => {
   // reload page: new band should appear
   cy.reload();
   cy.findByRole("heading", { name: /avalanche of cheese/i }).should("exist");
+
+  // clear ISR cache to initial DB
+  cy.resetDbAndIsrCache();
+});
+
+it("should load refreshed page from cache after new show is added", () => {
+  // check that new show is not on page
+  cy.task("db:reset").visit("/shows");
+  cy.findByRole("heading", { name: /avalanche of cheese/i }).should(
+    "not.exist"
+  );
+
+  // add new show via post request to api
+  const showId = generateRandomId();
+  const show = generateNewShow(showId);
+  const secret = Cypress.env("REVALIDATION_SECRET");
+
+  cy.request("POST", `/api/shows?secret=${secret}`, { newShow: show }).then(
+    (response) => expect(response.body.revalidated).to.equal(true)
+  );
+
+  // reload page: new band should appear
+  cy.reload();
+  cy.findByRole("heading", { name: /avalanche of cheese/i }).should("exist");
+
+  // clear ISR cache to initial DB
+  cy.resetDbAndIsrCache();
 });
