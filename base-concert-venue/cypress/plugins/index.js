@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/no-var-requires */
 /// <reference types="cypress" />
 // ***********************************************************
@@ -21,6 +22,11 @@ const { addBand } = require("../../lib/features/bands/queries");
  */
 // eslint-disable-next-line no-unused-vars
 module.exports = (on, config) => {
+  // creating env for cypress
+  config.env.REVALIDATION_SECRET = process.env.REVALIDATION_SECRET;
+  // to access within a test function:
+  // Cypress.env("REVALIDATION_SECRET")
+
   // `on` is used to hook into various events Cypress emits
   on("task", {
     "db:reset": () => resetDB().then(() => null),
@@ -30,4 +36,5 @@ module.exports = (on, config) => {
   });
 
   // `config` is the resolved Cypress config
+  return config;
 };
