@@ -120,3 +120,20 @@ it("redirects for protected pages", () => {
     });
   });
 });
+
+it("does not show sign-in page when already signed in", () => {
+  // reset db before test
+  cy.task("db:reset").signIn(
+    Cypress.env("TEST_USER_EMAIL"),
+    Cypress.env("TEST_USER_PASSWORD")
+  );
+
+  // access tickets page
+  cy.visit("/reservations/0");
+
+  // check for user email and sign-out buttons in nav
+  cy.findByRole("button", { name: Cypress.env("TEST_USER_EMAIL") }).should(
+    "exist"
+  );
+  cy.findByRole("button", { name: /sign out/i }).should("exist");
+});
