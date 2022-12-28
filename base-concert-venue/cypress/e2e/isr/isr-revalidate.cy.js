@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { generateNewBand } from "../../__tests__/__mocks__/fakeData/newBand";
-import { generateRandomId } from "../../lib/features/reservations/utils";
-import { generateNewShow } from "../../__tests__/__mocks__/fakeData/newShow";
+import { generateNewBand } from "../../../__tests__/__mocks__/fakeData/newBand";
+import { generateNewShow } from "../../../__tests__/__mocks__/fakeData/newShow";
+import { generateRandomId } from "../../../lib/features/reservations/utils";
 
 it("should load refreshed page from cache after new band is added", () => {
   // check that new band is not on page

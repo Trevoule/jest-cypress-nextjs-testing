@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
-import { generateNewReservation } from "../../__tests__/__mocks__/fakeData/newReservation";
-import { generateRandomId } from "../../lib/features/reservations/utils";
+import { generateNewReservation } from "../../../__tests__/__mocks__/fakeData/newReservation";
+import { generateRandomId } from "../../../lib/features/reservations/utils";
 
 const ONE_SECOND = 1000;
 const FIFTEEN_SECONDS = ONE_SECOND * 15;
