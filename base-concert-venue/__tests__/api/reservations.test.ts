@@ -1,15 +1,19 @@
 import { testApiHandler } from "next-test-api-route-handler";
-import userAuthHandler from "@/pages/api/users/index";
+
+import reservationHandler from "@/pages/api/reservations/[reservationId]";
 import userReservationsHandler from "@/pages/api/users/[userId]/reservations";
 
 // running mock test for authentication *__mocks__
 jest.mock("@/lib/auth/utils");
 
-test("POST /api/users receives token with correct credentials", async () => {
+test("POST /api/reservations/reservationId creates a reservation", async () => {
   await testApiHandler({
-    handler: userAuthHandler,
+    handler: reservationHandler,
+    paramsPatcher: (params) => {
+      // eslint-disable-next-line no-param-reassign
+      params.reservationId = 12345;
+    },
     test: async ({ fetch }) => {
-      // sending POST request with body
       const res = await fetch({
         method: "POST",
         headers: {
@@ -17,26 +21,18 @@ test("POST /api/users receives token with correct credentials", async () => {
           "content-type": "application/json",
         },
         body: JSON.stringify({
-          email: "test@test.test",
-          password: "test",
+          seatCount: 5,
+          userId: 1,
+          showId: 0,
         }),
       });
 
-      // check res status
-      expect(res.status).toBe(200);
+      expect(res.status).toEqual(201);
 
       const json = await res.json();
-
-      // as token is constantly changing, we will check userId and email
-      expect(json).toHaveProperty("user");
-      expect(json.user.id).toEqual(1);
-      expect(json.user.email).toEqual("test@test.test");
-      expect(json.user).toHaveProperty("token");
     },
   });
-});
 
-test("GET api/user/[userId]/reservations returns correct number of reservations", async () => {
   await testApiHandler({
     handler: userReservationsHandler,
     paramsPatcher: (params) => {
@@ -46,24 +42,27 @@ test("GET api/user/[userId]/reservations returns correct number of reservations"
     test: async ({ fetch }) => {
       const res = await fetch({ method: "GET" });
       expect(res.status).toBe(200);
+
       const json = await res.json();
-      expect(json.userReservations).toHaveLength(2);
+      expect(json.userReservations).toHaveLength(3);
     },
   });
 });
 
-test("GET api/user/12345/reservations returns no reservations", async () => {
+test("GET api/user/[userId]/reservations returns only current reservations", async () => {
   await testApiHandler({
     handler: userReservationsHandler,
     paramsPatcher: (params) => {
       // eslint-disable-next-line no-param-reassign
-      params.userId = 12345;
+      params.userId = 1;
     },
     test: async ({ fetch }) => {
       const res = await fetch({ method: "GET" });
-      expect(res.status).toBe(200);
+      expect(res.status).toEqual(200);
+
       const json = await res.json();
-      expect(json.userReservations).toHaveLength(0);
+      // if we perform separate test db will be reset before test
+      expect(json.userReservations).toHaveLength(2);
     },
   });
 });
