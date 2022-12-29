@@ -17,6 +17,9 @@ const customJestConfig = {
   },
   testEnvironment: "jest-environment-jsdom",
   watchPathIgnorePatterns: ["<rootDir>/__tests__/__mocks__/db/.*\\.json"],
+  // prevent running tests in parallel, running in parallel is faster
+  // solve problem when tests using same db
+  maxWorkers: 1,
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
