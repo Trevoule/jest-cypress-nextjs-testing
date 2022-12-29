@@ -19,3 +19,24 @@ test("GET /api/shows returns shows from database", async () => {
     },
   });
 });
+
+test("GET /api/shows/[showId] returns the data for the correct show ID", async () => {
+  await testApiHandler({
+    handler: showIdHandler,
+    paramsPatcher: (params) => {
+      // eslint-disable-next-line no-param-reassign
+      params.showId = 0;
+    },
+    test: async ({ fetch }) => {
+      const res = await fetch({ method: "GET" });
+      expect(res.status).toBe(200);
+
+      // response from API
+      const json = await res.json();
+
+      // checking that data from json equals to data from db
+      const { fakeShows } = await readFakeData();
+      expect(json).toEqual({ show: fakeShows[0] });
+    },
+  });
+});
